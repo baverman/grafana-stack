@@ -1,0 +1,14 @@
+FROM grafana-stack.base
+
+# Dev dependencies
+RUN apt-get -y install --no-install-recommends \
+        python-dev libffi-dev libssl-dev libpcre3-dev python-pip build-essential
+
+ENV PYTHONPATH=/conf:/pypkg/lib/python2.7/site-packages/opt/graphite/webapp:/pypkg/lib/python2.7/site-packages/opt/graphite/lib:/pypkg/lib/python2.7/site-packages
+ENV PATH=/pypkg/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+RUN mkdir -p /pypkg
+RUN pip install --prefix=/pypkg setuptools wheel \
+ && pip install --prefix=/pypkg uwsgi==2.0.15 graphite-web==1.0.2 carbon==1.0.2 whisper==1.0.2 \
+ && pip install --prefix=/pypkg https://github.com/trbs/bucky/archive/a779aebe5dddb3aeee6356a3f3988ee3588b3cef.tar.gz \
+ && touch /pypkg/lib/python2.7/site-packages/zope/__init__.py
