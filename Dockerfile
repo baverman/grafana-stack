@@ -1,6 +1,6 @@
 FROM grafana-stack.base
 
-COPY migrate.sh /
+COPY root /
 ADD req.tar.gz /
 
 ENV PYTHONPATH=/conf:/pypkg/lib/python2.7/site-packages/opt/graphite/webapp:/pypkg/lib/python2.7/site-packages/opt/graphite/lib:/pypkg/lib/python2.7/site-packages \
@@ -12,4 +12,4 @@ ENV PYTHONPATH=/conf:/pypkg/lib/python2.7/site-packages/opt/graphite/webapp:/pyp
 VOLUME /conf /data
 EXPOSE 2003 8125 8080
 
-CMD uwsgi --ini /conf/uwsgi.ini
+CMD /run.sh
