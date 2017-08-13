@@ -1,7 +1,7 @@
 FROM grafana-stack.base
 
-COPY root /
 ADD req.tar.gz /
+COPY root /
 
 ENV PYTHONPATH=/conf:/pypkg/lib/python2.7/site-packages/opt/graphite/webapp:/pypkg/lib/python2.7/site-packages/opt/graphite/lib:/pypkg/lib/python2.7/site-packages \
     PATH=/pypkg/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
