@@ -4,28 +4,34 @@ import os.path
 import argparse
 
 from jinja2 import Environment, StrictUndefined
+import defaults
 
 
-class DefaultSettings:
-    SECRET_KEY = 'secret-key'
-
-    GRAPHITE_PORT = 8080
-    CARBON_PORT = 2003
-    CARBON_STORAGE_SCHEMA_CARBON = r'^carbon\.|60s:1d,5m:7d,10m:30d'
-    CARBON_STORAGE_SCHEMA_ZDEFAULT = r'.*|60s:7d,5m:30d,30m:90d,1h:1y'
-
-    STATSD_NAME = 'localhost'
-    STATSD_PORT = 8125
-    STATSD_FLUSH_INTERVAL = "60.0"
-    STATSD_PERCENTILES = [50, 95, 99]
-    STATSD_ENABLE = True
-
-    GRAFANA_ROOT_URL = "http://127.0.0.1:3000/"
-    GRAFANA_ADMIN_USER = 'admin'
-    GRAFANA_ADMIN_PASSWORD = 'admin'
+def coerce(settings, name, cnv):
+    settings[name] = cnv(settings[name])
 
 
-settings = vars(DefaultSettings)
+def to_bool(value):
+    if value and isinstance(value, basestring):
+        return value.lower() not in ('0', 'no', 'false')
+    return bool(value)
+
+
+def to_list_of_ints(value):
+    return map(int, filter(None, value.split(',')))
+
+
+# load environment vars
+settings = vars(defaults)
+for k, v in settings.iteritems():
+    if k in os.environ:
+        settings[k] = os.environ[k]
+
+# convert strings to some more meaningful
+coerce(settings, 'STATSD_PERCENTILES', to_list_of_ints)
+coerce(settings, 'STATSD_ENABLE', to_bool)
+
+# convert string schemas to dicts
 settings['storage_schemas'] = []
 for k, v in sorted(settings.items()):
     prefix = 'GRAPHITE_STORAGE_SCHEMA_'
