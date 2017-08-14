@@ -1,7 +1,7 @@
 #!/bin/sh
 
 name=${1:-baverman/grafana-stack}
-tag=${2:-1.0.2-4.4.3-2}
+tag=${2:-1.0.2-4.4.3-3}
 
 docker build -f Dockerfile.base -t grafana-stack.base .
 docker build -f Dockerfile.deps -t grafana-stack.deps .

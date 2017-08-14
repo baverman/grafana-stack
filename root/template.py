@@ -21,6 +21,12 @@ def to_list_of_ints(value):
     return map(int, filter(None, value.split(',')))
 
 
+def random_string(value):
+    if not value:
+        value = os.urandom(20).encode('hex')
+    return value
+
+
 # load environment vars
 settings = vars(defaults)
 for k, v in settings.iteritems():
@@ -30,6 +36,7 @@ for k, v in settings.iteritems():
 # convert strings to some more meaningful
 coerce(settings, 'STATSD_PERCENTILES', to_list_of_ints)
 coerce(settings, 'STATSD_ENABLE', to_bool)
+coerce(settings, 'SECRET_KEY', random_string)
 
 # convert string schemas to dicts
 settings['storage_schemas'] = []
