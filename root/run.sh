@@ -1,7 +1,6 @@
 #!/bin/bash
 
 if [ ! -f /conf/carbon.conf ]; then
-    mkdir /conf
     /template.py --out-dir /conf /tpl/*
 fi
 
