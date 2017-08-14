@@ -27,29 +27,43 @@ def random_string(value):
     return value
 
 
-# load environment vars
-settings = vars(defaults)
-for k, v in settings.iteritems():
-    if k in os.environ:
-        settings[k] = os.environ[k]
+def load_settings(envfile):
+    settings = vars(defaults)
 
-# convert strings to some more meaningful
-coerce(settings, 'STATSD_PERCENTILES', to_list_of_ints)
-coerce(settings, 'STATSD_ENABLE', to_bool)
-coerce(settings, 'SECRET_KEY', random_string)
+    # load from envfile
+    for l in open(envfile):
+        l = l.strip('\r\n')
+        k, _, v = l.partition('=')
+        settings[k] = v
 
-# convert string schemas to dicts
-settings['storage_schemas'] = []
-for k, v in sorted(settings.items()):
-    prefix = 'GRAPHITE_STORAGE_SCHEMA_'
-    if k.startswith(prefix):
-        name = k[len(prefix):].lower()
-        pattern, retentions = v.split('|')
-        settings['storage_schemas'].append({
-            'name': name,
-            'pattern': pattern,
-            'retentions': retentions,
-        })
+    # load environment vars
+    for k in settings:
+        if k in os.environ:
+            settings[k] = os.environ[k]
+
+    # convert strings to some more meaningful
+    coerce(settings, 'STATSD_PERCENTILES', to_list_of_ints)
+    coerce(settings, 'STATSD_ENABLE', to_bool)
+    coerce(settings, 'SECRET_KEY', random_string)
+    coerce(settings, 'GRAFANA_AUTH_GITHUB', to_bool)
+    coerce(settings, 'GRAFANA_AUTH_GITHUB_SIGN_UP', to_bool)
+    coerce(settings, 'GRAFANA_AUTH_GOOGLE', to_bool)
+    coerce(settings, 'GRAFANA_AUTH_GOOGLE_SIGN_UP', to_bool)
+
+    # convert string schemas to dicts
+    settings['storage_schemas'] = []
+    for k, v in sorted(settings.items()):
+        prefix = 'GRAPHITE_STORAGE_SCHEMA_'
+        if k.startswith(prefix):
+            name = k[len(prefix):].lower()
+            pattern, retentions = v.split('|')
+            settings['storage_schemas'].append({
+                'name': name,
+                'pattern': pattern,
+                'retentions': retentions,
+            })
+
+    return settings
 
 
 env = Environment(autoescape=False, undefined=StrictUndefined, trim_blocks=True,
@@ -57,9 +71,11 @@ env = Environment(autoescape=False, undefined=StrictUndefined, trim_blocks=True,
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--out-dir', dest='out_dir')
+parser.add_argument('--env', dest='env')
 parser.add_argument('template', nargs='+')
 
 args = parser.parse_args()
+settings = load_settings(args.env)
 
 for fname in args.template:
     tpl = env.from_string(open(fname).read())

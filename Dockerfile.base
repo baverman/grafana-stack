@@ -2,8 +2,10 @@ FROM ubuntu:17.04
 
 RUN apt-get update -y \
  && apt-get -y install --no-install-recommends \
-        python2.7 libpython2.7 libffi6 openssl libpcre3 libcairo2 wget \
- && wget --no-verbose --no-check-certificate https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.4.3_amd64.deb -O grafana.deb \
+        python2.7 libpython2.7 libffi6 openssl \
+        ca-certificates libpcre3 libcairo2 wget \
+ && wget --no-verbose --no-check-certificate \
+        https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_4.4.3_amd64.deb -O grafana.deb \
  && echo "a23aeec4d56f0be00e8403bf502672a9358b4f502c3f089db2295f8ad7811161  grafana.deb" | sha256sum -c \
  && dpkg -i grafana.deb \
  && rm grafana.deb \
