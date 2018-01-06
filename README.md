@@ -1,2 +1,3 @@
 # grafana-stack
-Small docker image for graphite/grafana/bucky
+
+Small docker images for graphite/grafana/statsd

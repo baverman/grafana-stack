@@ -1,4 +1,4 @@
-SECRET_KEY = "{{ SECRET_KEY }}"
+SECRET_KEY = "{{ SECRET_KEY | random_string }}"
 LOGGING_CONFIG = None
 
 import logging
