@@ -1,7 +1,4 @@
-from datetime import datetime
-from hashlib import md5
-from fabric.api import run, local, env, get, put, runs_once, execute, task
-from fabric.contrib.files import exists
+from fabric.api import run, env, task
 
 PROJECT = 'grafana-stack'
 GRAFANA_PORT = 3000

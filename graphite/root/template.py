@@ -8,16 +8,6 @@ from jinja2 import Environment, StrictUndefined, contextfilter
 import defaults
 
 
-def to_bool(value):
-    if value and isinstance(value, basestring):
-        return value.lower() not in ('0', 'no', 'false')
-    return bool(value)
-
-
-def to_list_of_ints(value):
-    return map(int, filter(None, value.split(',')))
-
-
 def random_string(value):
     if not value:
         value = os.urandom(20).encode('hex')
@@ -40,31 +30,38 @@ def load_settings():
     return settings
 
 
-env = Environment(autoescape=False, undefined=StrictUndefined, trim_blocks=True,
-                  lstrip_blocks=True, auto_reload=False)
+if __name__ == '__main__':
+    env = Environment(autoescape=False, undefined=StrictUndefined, trim_blocks=True,
+                      lstrip_blocks=True, auto_reload=False)
 
-env.filters.update({'random_string': random_string,
-                    'split_prefix': split_prefix})
+    env.filters.update({'random_string': random_string,
+                        'split_prefix': split_prefix})
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--out-dir', dest='out_dir')
-parser.add_argument('template', nargs='+')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--out-dir', dest='out_dir')
+    parser.add_argument('--force', '-f', action='store_true', help='overwrite files in out_dir')
+    parser.add_argument('template', nargs='+')
 
-args = parser.parse_args()
-settings = load_settings()
+    args = parser.parse_args()
+    settings = load_settings()
 
-for fname in args.template:
-    tpl = env.from_string(open(fname).read())
-    out = tpl.render(settings)
-    if not out.endswith(u'\n'):
-        out += u'\n'
+    for fname in args.template:
+        tpl = env.from_string(open(fname).read())
+        out = tpl.render(settings)
+        if not out.endswith(u'\n'):
+            out += u'\n'
 
-    if args.out_dir:
-        out_fname = os.path.join(args.out_dir, os.path.basename(fname))
-        print('Generating', out_fname)
-        fobj = open(out_fname, 'wt')
-    else:
-        fobj = sys.stdout
+        if args.out_dir:
+            out_fname = os.path.join(args.out_dir, os.path.basename(fname))
+            if args.force or not os.path.exists(out_fname):
+                print('Generating', out_fname)
+                fobj = open(out_fname, 'wt')
+            else:
+                fobj = None
+                print('Skipping', out_fname)
+        else:
+            fobj = sys.stdout
 
-    fobj.write(out)
-    fobj.flush()
+        if fobj:
+            fobj.write(out)
+            fobj.flush()
