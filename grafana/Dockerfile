@@ -31,7 +31,5 @@ RUN mkdir /grafana \
 FROM alpine:3.7
 COPY --from=deps /grafana /grafana
 COPY defaults.ini /grafana/conf/
-ENV DOMAIN=127.0.0.1 \
-    ROOT_URL=http://127.0.0.1:3000/
 WORKDIR /grafana
 ENTRYPOINT ["/grafana/bin/grafana-server"]

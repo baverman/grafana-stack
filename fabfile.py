@@ -1,3 +1,5 @@
+import os
+import binascii
 from fabric.api import run, env, task
 
 PROJECT = 'grafana-stack'
@@ -40,8 +42,10 @@ def restart_graphite():
 @task
 def restart_grafana():
     """Restarts grafana service"""
-    evars = get_evars({'DOMAIN': env.host,
-                       'ROOT_URL': f'http://{env.host}:3000/'})
+    secret_key = binascii.hexlify(os.urandom(20)).decode()
+    evars = get_evars({'GF_SERVER_DOMAIN': env.host,
+                       'GF_SERVER_ROOT_URL': f'http://{env.host}:3000/',
+                       'GF_SECURITY_SECRET_KEY': secret_key})
     run(f'''
         docker stop -t 10 grafana
         docker rm grafana || true

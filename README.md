@@ -1,7 +1,7 @@
 # Grafana stack
 
 Tiny docker images for [grafana], [graphite] and [statsdly] \([statsd] implementation\).
-For example, grafana ~ 90M, graphite ~ 125M, statsdly ~ 55M.
+For example, grafana-4.6.3 ~ 90M, graphite-1.1.1 ~ 125M, statsdly-0.4 ~ 55M.
 All images are build from official sources with sane (read very opinionated :) configuration defaults.
 
 [grafana]: https://grafana.com/
@@ -21,18 +21,18 @@ links (deprecated) or use docker-compose. All examples below assume
 
 ## Graphite
 
-Dockerhub: `baverman/graphite`.
+Dockerhub: [baverman/graphite](https://hub.docker.com/r/baverman/graphite/tags/).
 
 Start container:
 
     mkdir -p data/carbon
     export DOCKER_USER=$(id -u):$(id -g)
-    docker run -d --name graphite -p 2003:2003 --restart always --network gragana-stack \
+    docker run -d --name graphite -p 2003:2003 --restart always --network grafana-stack \
                -v $PWD/data/carbon:/data -u $DOCKER_USER baverman/graphite
 
 This command will start `graphite-web` and `carbon-cache` services under
 current user. Only 2003 TCP port (carbon text protocol) will be exposed and all
-data will be written in `data/carbon` directory.
+data will be written to `data/carbon` directory.
 
 **Ports**:
 
@@ -60,7 +60,7 @@ data will be written in `data/carbon` directory.
       CARBON_STORAGE_SCHEMA_ZDEFAULT=.*|60s:7d,5m:30d,30m:90d,1h:1y
 
   IMPORTANT! Default minimal retention is 60s, you MUST configure carbon clients to
-  flush metrics every 60s at least. Or you will loose data.
+  flush metrics not more often than once in every 60s or you will loose data.
 
 * `CARBON_STORAGE_AGG_*`: control aggregation policies in [/conf/storage-aggregation.conf].
   Format is `pattern|xFilesFactor|aggregationMethod`. You can define any number of variables.
@@ -71,7 +71,50 @@ data will be written in `data/carbon` directory.
       CARBON_STORAGE_AGG_SUM=\.count$|0|sum
       CARBON_STORAGE_AGG_ZDEFAULT=.*|0.2|average
 
-  Metrics ended with `.count` can be used to precisely store counters by default.
+  Metrics ending with `.count` can be used to precisely store counters.
+
+**Build image**:
+
+    ./graphite/build.sh [name] [graphite-version] [tag]
 
 [/conf/storage-schemas.conf]: http://graphite.readthedocs.io/en/latest/config-carbon.html#storage-schemas-conf
 [/conf/storage-aggregation.conf]: http://graphite.readthedocs.io/en/latest/config-carbon.html#storage-aggregation-conf
+
+
+## Grafana
+
+Dockerhub: [baverman/grafana](https://hub.docker.com/r/baverman/grafana/tags/).
+
+Start container:
+
+    mkdir -p data/grafana
+    export DOCKER_USER=$(id -u):$(id -g)
+    docker run -d --name grafana -p 3000:3000 --restart always --network grafana-stack \
+               -v $PWD/data/grafana:/data -u $DOCKER_USER baverman/grafana
+
+This command will start grafana service under current user. Only 3000 TCP port
+(HTTP) will be exposed and all data will be written to `data/grafana`
+directory.
+
+And you can add `http://graphite:8080/` as graphite datasource with `1.1.x` version.
+
+**Ports**:
+
+* `3000`: Grafana HTTP port.
+
+**Volumes**:
+
+* `/data`: grafana storage dir.
+
+**Environment variables**:
+
+You can override any grafana settings via
+[envvars](http://docs.grafana.org/installation/configuration/#using-environment-variables).
+
+* GF_SERVER_DOMAIN: domain.
+* GF_SERVER_ROOT_URL: root url.
+* GF_SECURITY_SECRET_KEY: secret key to sign up cookies.
+
+**Build image**:
+
+    ./grafana/build.sh [name] [grafana-version] [sha256-src-checksum] [tag]
