@@ -1,7 +1,7 @@
 # Grafana stack
 
 Tiny docker images for [grafana], [graphite] and [statsdly] \([statsd] implementation\).
-For example, grafana-4.6.3 ~ 90M, graphite-1.1.1 ~ 125M, statsdly-0.4 ~ 55M.
+For example, grafana-4.6.3 ~ 90M, graphite-1.1.1 ~ 125M, statsdly-0.4.1 ~ 55M.
 All images are build from official sources with sane (read very opinionated :) configuration defaults.
 
 [grafana]: https://grafana.com/
@@ -23,7 +23,7 @@ links (deprecated) or use docker-compose. All examples below assume
 
 Dockerhub: [baverman/graphite](https://hub.docker.com/r/baverman/graphite/tags/).
 
-Start container:
+**Start container**:
 
     mkdir -p data/carbon
     export DOCKER_USER=$(id -u):$(id -g)
@@ -85,7 +85,7 @@ data will be written to `data/carbon` directory.
 
 Dockerhub: [baverman/grafana](https://hub.docker.com/r/baverman/grafana/tags/).
 
-Start container:
+**Start container**:
 
     mkdir -p data/grafana
     export DOCKER_USER=$(id -u):$(id -g)
@@ -111,9 +111,9 @@ And you can add `http://graphite:8080/` as graphite datasource with `1.1.x` vers
 You can override any grafana settings via
 [envvars](http://docs.grafana.org/installation/configuration/#using-environment-variables).
 
-* GF_SERVER_DOMAIN: domain.
-* GF_SERVER_ROOT_URL: root url.
-* GF_SECURITY_SECRET_KEY: secret key to sign up cookies.
+* `GF_SERVER_DOMAIN`: domain.
+* `GF_SERVER_ROOT_URL`: root url.
+* `GF_SECURITY_SECRET_KEY`: secret key to sign up cookies.
 
 **Build image**:
 
@@ -124,7 +124,7 @@ You can override any grafana settings via
 
 Dockerhub: [baverman/statsdly](https://hub.docker.com/r/baverman/statsdly/tags/).
 
-Start container:
+**Start container**:
 
     export DOCKER_USER=$(id -u):$(id -g)
     docker run -d --name statsdly -p 8125:8125/udp --restart always --network grafana-stack \
@@ -140,4 +140,4 @@ host.
 
 **Build image**:
 
-    ./statsdly//build.sh [name] [statsdly-version] [tag]
+    ./statsdly/build.sh [name] [statsdly-version] [tag]
