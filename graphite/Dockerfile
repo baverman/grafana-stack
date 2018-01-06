@@ -31,7 +31,7 @@ ENV PATH=/pypkg/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     PYTHONPATH=/conf:/pypkg/lib/python2.7/site-packages \
     GRAPHITE_ROOT=/data \
     GRAPHITE_CONF_DIR=/conf \
-    GRAPHITE_STORAGE_DIR=/data/carbon
+    GRAPHITE_STORAGE_DIR=/data
 
 EXPOSE 2003 8080
 RUN mkdir /data /conf; chmod 777 /data /conf
