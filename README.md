@@ -118,3 +118,26 @@ You can override any grafana settings via
 **Build image**:
 
     ./grafana/build.sh [name] [grafana-version] [sha256-src-checksum] [tag]
+
+
+## Statsdly
+
+Dockerhub: [baverman/statsdly](https://hub.docker.com/r/baverman/statsdly/tags/).
+
+Start container:
+
+    export DOCKER_USER=$(id -u):$(id -g)
+    docker run -d --name statsdly -p 8125:8125/udp --restart always --network grafana-stack \
+               -u $DOCKER_USER baverman/statsdly -l 0.0.0.0 -g graphite -f 60
+
+This command will start statsdly service (a StatsD implementation) on 8125 UDP
+port with 60s flush interval and service will forward metrics to `graphite`
+host.
+
+**Ports**:
+
+* `8125`: StatsD UDP port.
+
+**Build image**:
+
+    ./statsdly//build.sh [name] [statsdly-version] [tag]
