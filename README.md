@@ -1,7 +1,7 @@
 # Grafana stack
 
 Tiny docker images for [grafana], [graphite] and [statsdly] \([statsd] implementation\).
-For example, grafana-4.6.3 ~ 90M, graphite-1.1.1 ~ 125M, statsdly-0.4.1 ~ 55M.
+For example, grafana-4.6.3 ~ 90M, graphite-1.1.1 ~ 125M, statsdly-0.4.1 ~ 33M.
 All images are build from official sources with sane (read very opinionated :) configuration defaults.
 
 [grafana]: https://grafana.com/
