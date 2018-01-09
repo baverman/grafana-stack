@@ -52,7 +52,10 @@ data will be written to `data/carbon` directory.
 
 **Environment variables**:
 
-* `CARBON_STORAGE_SCHEMA_*`: control retention policies in [/conf/storage-schemas.conf].
+* `CC_*`: Overrides settings from [carbon.conf] `[cache]` section. For example
+  you can set `CC_MAX_UPDATES_PER_SECOND=100` to limit IOPS.
+
+* `CARBON_STORAGE_SCHEMA_*`: control retention policies in [storage-schemas.conf].
   Format is `pattern|retentions`. You can define any number of variables.
   Default retentions are:
 
@@ -62,7 +65,7 @@ data will be written to `data/carbon` directory.
   IMPORTANT! Default minimal retention is 60s, you MUST configure carbon clients to
   flush metrics not more often than once in every 60s or you will loose data.
 
-* `CARBON_STORAGE_AGG_*`: control aggregation policies in [/conf/storage-aggregation.conf].
+* `CARBON_STORAGE_AGG_*`: control aggregation policies in [storage-aggregation.conf].
   Format is `pattern|xFilesFactor|aggregationMethod`. You can define any number of variables.
   Default aggregations are:
 
@@ -77,8 +80,9 @@ data will be written to `data/carbon` directory.
 
     ./graphite/build.sh [name] [graphite-version] [tag]
 
-[/conf/storage-schemas.conf]: http://graphite.readthedocs.io/en/latest/config-carbon.html#storage-schemas-conf
-[/conf/storage-aggregation.conf]: http://graphite.readthedocs.io/en/latest/config-carbon.html#storage-aggregation-conf
+[storage-schemas.conf]: http://graphite.readthedocs.io/en/latest/config-carbon.html#storage-schemas-conf
+[storage-aggregation.conf]: http://graphite.readthedocs.io/en/latest/config-carbon.html#storage-aggregation-conf
+[carbon.conf]: https://github.com/graphite-project/carbon/blob/master/conf/carbon.conf.example
 
 
 ## Grafana

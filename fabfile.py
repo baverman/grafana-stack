@@ -19,19 +19,25 @@ def init():
     run(f'''
         mkdir -p ~/{PROJECT}/data/carbon ~/{PROJECT}/data/grafana
         docker network inspect {PROJECT} > /dev/null || docker network create {PROJECT}
-        docker pull baverman/graphite
-        docker pull baverman/grafana
     ''')
+
+
+@task
+def pull_image(*images):
+    for image in images:
+        run(f'docker pull baverman/{image}')
 
 
 @task
 def restart_graphite():
     """Restarts graphite service"""
+    evars = get_evars({'CC_MAX_UPDATES_PER_SECOND': 100,
+                       'CC_WHISPER_AUTOFLUSH': False})
     run(f'''
         docker stop -t 10 graphite
         docker rm graphite || true
         cd {PROJECT}
-        docker run -d --name graphite -p 2003:2003 --restart always --network {PROJECT} \\
+        docker run -d --name graphite -p 2003:2003 {evars} --restart always --network {PROJECT} \\
                    -v $PWD/data/carbon:/data -u $UID:$GROUPS \\
                    baverman/graphite
         sleep 10

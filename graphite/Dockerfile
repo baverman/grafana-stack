@@ -18,7 +18,7 @@ ENV GRAPHITE_NO_PREFIX=True \
 
 RUN apk add python2-dev libffi-dev openssl-dev pcre-dev build-base linux-headers py2-pip
 RUN pip2 install --prefix=/pypkg six \
- && pip2 install --prefix=/pypkg uwsgi==2.0.15 graphite-web==$GRAPHITE_VERSION \
+ && pip2 install --prefix=/pypkg uwsgi==2.0.15 graphite-web==$GRAPHITE_VERSION fadvise==6.0.0 \
                                  carbon==$GRAPHITE_VERSION whisper==$GRAPHITE_VERSION jinja2==2.9.6 \
  && touch /pypkg/lib/python2.7/site-packages/zope/__init__.py
 
