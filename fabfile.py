@@ -37,8 +37,8 @@ def restart_graphite():
         docker stop -t 10 graphite
         docker rm graphite || true
         cd {PROJECT}
-        docker run -d --name graphite -p 2003:2003 {evars} --restart always --network {PROJECT} \\
-                   -v $PWD/data/carbon:/data -u $UID:$GROUPS \\
+        docker run -d --name graphite -p 2003:2003 {evars} --restart unless-stopped \\
+                   --network {PROJECT} -v $PWD/data/carbon:/data -u $UID:$GROUPS \\
                    baverman/graphite
         sleep 10
         docker logs --tail 10 graphite
@@ -56,8 +56,8 @@ def restart_grafana():
         docker stop -t 10 grafana
         docker rm grafana || true
         cd {PROJECT}
-        docker run -d --name grafana -p 3000:3000 {evars} --restart always --network {PROJECT} \\
-                   -v $PWD/data/grafana:/data -u $UID:$GROUPS \\
+        docker run -d --name grafana -p 3000:3000 {evars} --restart unless-stopped \\
+                   --network {PROJECT} -v $PWD/data/grafana:/data -u $UID:$GROUPS \\
                    baverman/grafana
         sleep 3
         docker logs --tail 10 grafana

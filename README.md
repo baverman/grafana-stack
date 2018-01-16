@@ -27,7 +27,7 @@ Dockerhub: [baverman/graphite](https://hub.docker.com/r/baverman/graphite/tags/)
 
     mkdir -p data/carbon
     export DOCKER_USER=$(id -u):$(id -g)
-    docker run -d --name graphite -p 2003:2003 --restart always --network grafana-stack \
+    docker run -d --name graphite -p 2003:2003 --restart unless-stopped --network grafana-stack \
                -v $PWD/data/carbon:/data -u $DOCKER_USER baverman/graphite
 
 This command will start `graphite-web` and `carbon-cache` services under
@@ -93,7 +93,7 @@ Dockerhub: [baverman/grafana](https://hub.docker.com/r/baverman/grafana/tags/).
 
     mkdir -p data/grafana
     export DOCKER_USER=$(id -u):$(id -g)
-    docker run -d --name grafana -p 3000:3000 --restart always --network grafana-stack \
+    docker run -d --name grafana -p 3000:3000 --restart unless-stopped --network grafana-stack \
                -v $PWD/data/grafana:/data -u $DOCKER_USER baverman/grafana
 
 This command will start grafana service under current user. Only 3000 TCP port
@@ -131,7 +131,7 @@ Dockerhub: [baverman/statsdly](https://hub.docker.com/r/baverman/statsdly/tags/)
 **Start container**:
 
     export DOCKER_USER=$(id -u):$(id -g)
-    docker run -d --name statsdly -p 8125:8125/udp --restart always --network grafana-stack \
+    docker run -d --name statsdly -p 8125:8125/udp --restart unless-stopped --network grafana-stack \
                -u $DOCKER_USER baverman/statsdly -l 0.0.0.0 -g graphite -f 60
 
 This command will start statsdly service (a StatsD implementation) on 8125 UDP
