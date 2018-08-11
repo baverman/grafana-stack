@@ -1,7 +1,7 @@
 FROM alpine:3.7 as deps
 
-ARG GRAFANA_VERSION=4.6.3
-ARG GRAFANA_CHECKSUM=75959d1cd8f66d362b3bb885481dce77693417f51c2e81ab091e3d16650f1a69
+ARG GRAFANA_VERSION
+ARG GRAFANA_CHECKSUM
 
 RUN apk update \
  && apk add build-base git yarn nodejs-dev go
@@ -25,11 +25,12 @@ RUN cd ~/go/src/github.com/grafana/grafana \
 # Prepare artifact
 RUN mkdir /grafana \
  && cd ~/go/src/github.com/grafana/grafana \
- && cp -a conf bin public /grafana
+ && cp -a conf bin public /grafana \
+ && mv /grafana/bin/linux-amd64/* /grafana/bin/
 
 
 FROM alpine:3.7
 COPY --from=deps /grafana /grafana
-COPY defaults.ini /grafana/conf/
+COPY grafana.ini /grafana/conf
 WORKDIR /grafana
-ENTRYPOINT ["/grafana/bin/grafana-server"]
+ENTRYPOINT ["/grafana/bin/grafana-server", "--config", "/grafana/conf/grafana.ini"]
