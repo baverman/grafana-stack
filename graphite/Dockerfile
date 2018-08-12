@@ -12,7 +12,7 @@ RUN apk update \
 # =============================================
 FROM base as deps
 
-ARG GRAPHITE_VERSION=1.1.1
+ARG GRAPHITE_VERSION
 ENV GRAPHITE_NO_PREFIX=True \
     PYTHONPATH=/pypkg/lib/python2.7/site-packages
 
