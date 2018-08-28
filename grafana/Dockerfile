@@ -30,6 +30,7 @@ RUN mkdir /grafana \
 
 
 FROM alpine:3.7
+RUN apk add --no-cache ca-certificates
 COPY --from=deps /grafana /grafana
 COPY grafana.ini /grafana/conf
 WORKDIR /grafana
