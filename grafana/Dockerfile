@@ -1,4 +1,4 @@
-FROM alpine:3.9 as deps
+FROM alpine:3.9.4 as deps
 
 RUN apk add --no-cache build-base git npm yarn nodejs-dev go
 
@@ -29,7 +29,7 @@ RUN mkdir /grafana \
  && mv /grafana/bin/linux-amd64/* /grafana/bin/
 
 
-FROM alpine:3.9
+FROM alpine:3.9.4
 RUN apk add --no-cache ca-certificates
 COPY --from=deps /grafana /grafana
 COPY grafana.ini /grafana/conf
