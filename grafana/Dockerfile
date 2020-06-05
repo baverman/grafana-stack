@@ -1,6 +1,6 @@
-FROM alpine:3.12.0 as deps
+FROM golang:1.14.4-alpine3.12 as deps
 
-RUN apk add --no-cache build-base git npm yarn nodejs-dev go
+RUN apk add --no-cache build-base git npm yarn nodejs-dev
 
 ARG GRAFANA_VERSION
 ARG GRAFANA_CHECKSUM
