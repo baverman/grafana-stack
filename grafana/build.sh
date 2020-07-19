@@ -1,8 +1,9 @@
 #!/bin/sh
+set -e
 cd $(dirname $0)
 name=${1:-baverman/grafana}
-version=${2:-7.0.3}
-hsh=${3:-c8ce7801ff3cfbb407722817b7be1967353546177981c25f97c260b1d2ceab8a}
+version=${2:-7.0.6}
+hsh=${3:-ced0ed803072bd05243f480ebdf2acb758ceea82e6edcf95543b917b1499b771}
 tag=${4:-$version}
 
 if [ -n "$PROXY" ]; then
